@@ -1,4 +1,5 @@
 require 'app/root_scene.rb'
+require 'app/campfire.rb'
 
 def init args
   args.state.root_scene = RootScene.new(args)
