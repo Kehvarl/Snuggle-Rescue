@@ -1,16 +1,14 @@
 class Campfire
     attr_sprite
 
-    def initialize
-        @x = 750
-        @y = 750
+    def initialize x = 750, y = 750
         @fire = { anchor_x: 0.5, anchor_y: 0.5,
-                  x: @x, y: @y, w: 50, h: 50,
+                  x: x, y: y, w: 50, h: 50,
                   tile_w: 80, tile_h: 80, tile_x: 0, tile_y: 0,
                   path: "sprites/hexagon/orange.png"}
 
         @light = { anchor_x: 0.5, anchor_y: 0.5,
-                   x: @x, y: @y, w: 300, h: 300,
+                   x: x, y: y, w: 300, h: 300,
                    tile_w: 80, tile_h: 80, tile_x: 0, tile_y: 0,
                    r: 255, g: 128, b: 128, a: 32,
                    path: "sprites/circle/white.png",
