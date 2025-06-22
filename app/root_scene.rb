@@ -7,6 +7,20 @@ class RootScene
         @player = {x: 3840/2, y: 2160/2, w: 32, h: 32,
                    anchor_x: 0.5, anchor_y: 0.5,
                    path: "sprites/circle/green.png"}.sprite!
+        # useful tiles:
+        # Empty
+        # 0,0
+        # Path Ends
+        # 12,11             ^
+        # 12,10 13,10 14,10 v < >
+        # Paths
+        # 12,9 13,9 14,9
+        # 12,8      14,8
+        # 12.7 13,7 14,7
+        # Path T connectors
+        # 12,6 13,6     | -
+        # 12,5 13,5     - |
+
     end
 
     def tick
