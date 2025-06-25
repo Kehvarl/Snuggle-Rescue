@@ -11,7 +11,7 @@ class RootScene
         @tiles = []
         # useful tiles:
         # Empty
-        # 0,0
+        # 9,12
         # Path Ends
         # 12,12 13,12 14,12 < > ^
         # 12,11       14,11 ^   v
@@ -24,8 +24,8 @@ class RootScene
         # Path T connectors
         # 12,6 13,6         | T
         # 12,5 13,5         - |
-        1280.step(2560, 16) do |x|
-            720.step(1440, 16) do |y|
+        0.step(3840, 16) do |x|
+            0.step(2160, 16) do |y|
                 @tiles << {x: x, y: y, w: 16, h: 16,
                           tile_x: 9*16, tile_y: 12*16,
                           tile_w: 16, tile_h: 16,
@@ -33,7 +33,35 @@ class RootScene
             end
         end
 
+        x = @player.x + 16
+        y = @player.y + 16
+        100.times do
+            if rand(10) < 5
+                if rand(10) < 5
+                    x -= 16
+                else
+                    x += 16
+                end
+            else
+                if rand(10) < 5
+                    y -= 16
+                else
+                    y += 16
+                end
+            end
+            @tiles << {x: x, y: y, w: 16, h: 16,
+                        tile_x: 11*16, tile_y: 6*16,
+                        tile_w: 16, tile_h: 16,
+                        path: "sprites/snow_islands.png"}.sprite!
+        end
+        generate_background
+    end
 
+    def generate_background
+        outputs[:background].w = 3840
+        outputs[:background].h = 2160
+        outputs[:background].background_color = [64, 64, 64, 255]
+        outputs[:background].primitives << @tiles
     end
 
     def tick
@@ -65,11 +93,11 @@ class RootScene
     end
 
     def render_scene
-        outputs[:scene].transient!
+        outputs[:scene].transient = true
         outputs[:scene].w = 3840
         outputs[:scene].h = 2160
         outputs[:scene].background_color = [64, 64, 64, 255]
-        outputs[:scene].primitives << @tiles
+        outputs[:scene].primitives << {x:0, y:0, w:3840, h:2160, path: :background }.sprite!
         outputs[:scene].primitives << @campfire.render()
         outputs[:scene].primitives << @player
 
