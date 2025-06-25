@@ -4,7 +4,7 @@ class RootScene
     def initialize args
         @args = args
         @campfire = Campfire.new(3840/2, 2160/2)
-        @player = {x: 3840/2, y: 2160/2, w: 32, h: 32,
+        @player = {x: 3840/2+64, y: 2160/2+64, w: 16, h: 16,
                    anchor_x: 0.5, anchor_y: 0.5,
                    path: "sprites/circle/green.png"}.sprite!
         @camera = {x: 3840/2, y: 2160/2, zoom: 1.0}
@@ -27,14 +27,14 @@ class RootScene
         0.step(3840, 16) do |x|
             0.step(2160, 16) do |y|
                 @tiles << {x: x, y: y, w: 16, h: 16,
-                          tile_x: 9*16, tile_y: 12*16,
-                          tile_w: 16, tile_h: 16,
+                          source_x: 9*16, source_y: 0*16,
+                          source_w: 16, source_h: 16,
                           path: "sprites/snow_islands.png"}.sprite!
             end
         end
 
-        x = @player.x + 16
-        y = @player.y + 16
+        x = @player.x
+        y = @player.y
         100.times do
             if rand(10) < 5
                 if rand(10) < 5
@@ -50,8 +50,8 @@ class RootScene
                 end
             end
             @tiles << {x: x, y: y, w: 16, h: 16,
-                        tile_x: 11*16, tile_y: 6*16,
-                        tile_w: 16, tile_h: 16,
+                        source_x: 12*16, source_y: 6*16,
+                        source_w: 16, source_h: 16,
                         path: "sprites/snow_islands.png"}.sprite!
         end
         generate_background
@@ -105,7 +105,7 @@ class RootScene
 
     def render
         {x: 0, y: 0, w: 1280, h: 720, path: :scene,
-         tile_x: @camera.x-640, tile_y: @camera.y-360,
-         tile_w: 1280, tile_h: 720}.sprite!
+         source_x: @camera.x-640, source_y: @camera.y-360,
+         source_w: 1280, source_h: 720}.sprite!
     end
 end
