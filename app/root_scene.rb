@@ -27,32 +27,37 @@ class RootScene
         0.step(3840, 16) do |x|
             0.step(2160, 16) do |y|
                 @tiles << {x: x, y: y, w: 16, h: 16,
-                          source_x: 9*16, source_y: 0*16,
-                          source_w: 16, source_h: 16,
-                          path: "sprites/snow_islands.png"}.sprite!
+                           source_x: 9*16, source_y: 0*16,
+                           source_w: 16, source_h: 16,
+                           path: "sprites/snow_islands.png"}.sprite!
             end
         end
-
-        x = @player.x
-        y = @player.y
-        100.times do
-            if rand(10) < 5
-                if rand(10) < 5
-                    x -= 16
-                else
-                    x += 16
-                end
-            else
-                if rand(10) < 5
-                    y -= 16
-                else
-                    y += 16
-                end
+        s = [1848, 1008, 13, 9]
+        [[1972, 1008, 14, 8], [1972, 1132, 13, 7], [1848, 1132, 12, 8], [1848, 1008, 14, 7]].each do |t|
+            dx = t[0] <=> s[0]
+            dy = t[1] <=> s[1]
+            x = s[0] + (16 * dx)
+            y = s[1] + (16 * dy)
+            loop do
+                @tiles << {
+                    x: x, y: y, w: 16, h: 16,
+                    source_x: s[2] * 16, source_y: s[3] * 16,
+                    source_w: 16, source_h: 16,
+                    path: "sprites/snow_islands.png"
+                }.sprite!
+                break if x + (16 * dx) == t[0] && y + (16 * dy) == t[1]
+                x += dx unless x == t[0]
+                y += dy unless y == t[1]
             end
-            @tiles << {x: x, y: y, w: 16, h: 16,
-                        source_x: 12*16, source_y: 6*16,
-                        source_w: 16, source_h: 16,
-                        path: "sprites/snow_islands.png"}.sprite!
+            s = t
+        end
+        [[1972, 1008, 14, 7], [1972, 1132, 14, 9], [1848, 1132, 12, 9], [1848, 1008, 12, 7]].each do |t|
+            @tiles << {
+                x: t[0], y: t[1], w: 16, h: 16,
+                source_x: (t[2]) * 16, source_y: (t[3]) * 16,
+                source_w: 16, source_h: 16,
+                path: "sprites/snow_islands.png"
+            }.sprite!
         end
         generate_background
     end
