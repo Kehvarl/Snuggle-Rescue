@@ -9,6 +9,7 @@ class RootScene
                    path: "sprites/circle/green.png"}.sprite!
         @camera = {x: 3840/2, y: 2160/2, zoom: 1.0}
         @tiles = []
+        @obstacles  = []
         # useful tiles:
         # Empty
         # 9,12
@@ -59,6 +60,23 @@ class RootScene
                 path: "sprites/snow_islands.png"
             }.sprite!
         end
+        500.times do
+            x = rand(240)
+            y = rand(134) + 1
+            tree = rand(4) + 15
+            @obstacles << {
+                x: x*16, y: y*16, w: 16, h: 16,
+                source_x: tree * 16, source_y: 12 * 16,
+                source_w: 16, source_h: 16,
+                path: "sprites/snow_islands.png"
+            }.sprite!
+            @obstacles << {
+                x: x*16, y: (y-1) * 16, w: 16, h: 16,
+                source_x: tree * 16, source_y: 11 * 16,
+                source_w: 16, source_h: 16,
+                path: "sprites/snow_islands.png"
+            }.sprite!
+        end
         generate_background
     end
 
@@ -67,6 +85,9 @@ class RootScene
         outputs[:background].h = 2160
         outputs[:background].background_color = [64, 64, 64, 255]
         outputs[:background].primitives << @tiles
+
+        outputs[:background].primitives << @obstacles.sort_by { |t| -t.y }
+
     end
 
     def tick
