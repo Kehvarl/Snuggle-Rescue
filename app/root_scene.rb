@@ -59,6 +59,22 @@ class RootScene
                 path: "sprites/snow_islands.png"
             }.sprite!
         end
+        500.times do
+            x = rand(240)
+            y = rand(134) + 1
+            @tiles << {
+                x: x*16, y: y*16, w: 16, h: 16,
+                source_x: 16 * 16, source_y: 12 * 16,
+                source_w: 16, source_h: 16,
+                path: "sprites/snow_islands.png"
+            }.sprite!
+            @tiles << {
+                x: x*16, y: (y-1) * 16, w: 16, h: 16,
+                source_x: 16 * 16, source_y: 11 * 16,
+                source_w: 16, source_h: 16,
+                path: "sprites/snow_islands.png"
+            }.sprite!
+        end
         generate_background
     end
 
