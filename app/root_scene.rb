@@ -98,19 +98,32 @@ class RootScene
     end
 
     def get_input
+        temp = @player.clone
         if inputs.keyboard.left
-            @player.x -=3
+            temp.x -=3
         elsif inputs.keyboard.right
-            @player.x += 3
+            temp.x += 3
         end
-        @player.x = @player.x.clamp(8, 3832)
-        if inputs.keyboard.up
-            @player.y +=3
-        elsif inputs.keyboard.down
-            @player.y -= 3
-        end
-        @player.y = @player.y.clamp(8, 2152)
+        temp.x = temp.x.clamp(8, 3832)
 
+        hits = @args.geometry.find_all_intersect_rect temp, @obstacles
+        if hits.count == 0
+            @player.x = temp.x
+        else
+            temp.x = @player.x
+        end
+
+        if inputs.keyboard.up
+            temp.y +=3
+        elsif inputs.keyboard.down
+            temp.y -= 3
+        end
+        temp.y = temp.y.clamp(8, 2152)
+
+        hits = @args.geometry.find_all_intersect_rect temp, @obstacles
+        if hits.count == 0
+            @player.y = temp.y
+        end
     end
 
     def calc_camera
