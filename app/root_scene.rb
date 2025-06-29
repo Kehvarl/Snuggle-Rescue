@@ -9,6 +9,7 @@ class RootScene
                    path: "sprites/circle/green.png"}.sprite!
         @camera = {x: 3840/2, y: 2160/2, zoom: 1.0}
         @tiles = []
+        @paths = []
         @obstacles  = []
         # useful tiles:
         # Empty
@@ -28,6 +29,7 @@ class RootScene
         0.step(3840, 16) do |x|
             0.step(2160, 16) do |y|
                 @tiles << {x: x, y: y, w: 16, h: 16,
+                           anchor_x: 0.5, anchor_y: 0.5,
                            source_x: 9*16, source_y: 0*16,
                            source_w: 16, source_h: 16,
                            path: "sprites/snow_islands.png"}.sprite!
@@ -40,8 +42,9 @@ class RootScene
             x = s[0] + (16 * dx)
             y = s[1] + (16 * dy)
             loop do
-                @tiles << {
+                @paths << {
                     x: x, y: y, w: 16, h: 16,
+                    anchor_x: 0.5, anchor_y: 0.5,
                     source_x: s[2] * 16, source_y: s[3] * 16,
                     source_w: 16, source_h: 16,
                     path: "sprites/snow_islands.png"
@@ -53,8 +56,9 @@ class RootScene
             s = t
         end
         [[1972, 1008, 14, 7], [1972, 1132, 14, 9], [1848, 1132, 12, 9], [1848, 1008, 12, 7]].each do |t|
-            @tiles << {
+            @paths << {
                 x: t[0], y: t[1], w: 16, h: 16,
+                anchor_x: 0.5, anchor_y: 0.5,
                 source_x: (t[2]) * 16, source_y: (t[3]) * 16,
                 source_w: 16, source_h: 16,
                 path: "sprites/snow_islands.png"
@@ -63,19 +67,23 @@ class RootScene
         500.times do
             x = rand(240)
             y = rand(134) + 1
-            tree = rand(4) + 15
-            @obstacles << {
-                x: x*16, y: y*16, w: 16, h: 16,
-                source_x: tree * 16, source_y: 12 * 16,
-                source_w: 16, source_h: 16,
-                path: "sprites/snow_islands.png"
-            }.sprite!
-            @obstacles << {
-                x: x*16, y: (y-1) * 16, w: 16, h: 16,
-                source_x: tree * 16, source_y: 11 * 16,
-                source_w: 16, source_h: 16,
-                path: "sprites/snow_islands.png"
-            }.sprite!
+            if @args.geometry.find_all_intersect_rect({x:x, y:y, w:16, h:32}, @paths).empty?
+                tree = rand(4) + 15
+                @obstacles << {
+                    x: x*16, y: y*16, w: 16, h: 16,
+                    anchor_x: 0.5, anchor_y: 0.5,
+                    source_x: tree * 16, source_y: 12 * 16,
+                    source_w: 16, source_h: 16,
+                    path: "sprites/snow_islands.png"
+                }.sprite!
+                @obstacles << {
+                    x: x*16, y: (y-1) * 16, w: 16, h: 16,
+                    anchor_x: 0.5, anchor_y: 0.5,
+                    source_x: tree * 16, source_y: 11 * 16,
+                    source_w: 16, source_h: 16,
+                    path: "sprites/snow_islands.png"
+                }.sprite!
+            end
         end
         generate_background
     end
@@ -86,38 +94,44 @@ class RootScene
         outputs[:background].background_color = [64, 64, 64, 255]
         outputs[:background].primitives << @tiles
 
+        outputs[:background].primitives << @paths
         outputs[:background].primitives << @obstacles.sort_by { |t| -t.y }
 
     end
 
     def tick
-        get_input
+        process_input
         @campfire.tick
         calc_camera
         render_scene
     end
 
-    def get_input
-        temp = @player.clone
+    def process_input
+        dx = 0
         if inputs.keyboard.left
-            temp.x -=3
+            dx = -3
         elsif inputs.keyboard.right
-            temp.x += 3
+            dx =  3
         end
+
+        dy = 0
+        if inputs.keyboard.up
+            dy =  3
+        elsif inputs.keyboard.down
+            dy = -3
+        end
+
+        temp = @player.clone
+        temp.x += dx
         temp.x = temp.x.clamp(8, 3832)
 
         hits = @args.geometry.find_all_intersect_rect temp, @obstacles
-        if hits.count == 0
+        if hits.empty?
             @player.x = temp.x
-        else
-            temp.x = @player.x
         end
 
-        if inputs.keyboard.up
-            temp.y +=3
-        elsif inputs.keyboard.down
-            temp.y -= 3
-        end
+        temp = @player.clone
+        temp.y += dy
         temp.y = temp.y.clamp(8, 2152)
 
         hits = @args.geometry.find_all_intersect_rect temp, @obstacles
