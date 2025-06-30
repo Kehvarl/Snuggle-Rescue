@@ -11,6 +11,7 @@ class RootScene
         @tiles = []
         @paths = []
         @obstacles  = []
+        @friends = []
         # useful tiles:
         # Empty
         # 9,12
@@ -85,6 +86,17 @@ class RootScene
                 }.sprite!
             end
         end
+        while @friends.size < 12 do
+            x = rand(240)
+            y = rand(134) + 1
+            if @args.geometry.find_all_intersect_rect({x:x, y:y, w:16, h:32}, @obstacles).empty?
+                @friends << {
+                    x: x*16, y: y*16, w: 16, h: 16,
+                    anchor_x: 0.5, anchor_y: 0.5,
+                    path: "sprites/circle/violet.png"
+                }.sprite!
+            end
+        end
         generate_background
     end
 
@@ -152,6 +164,7 @@ class RootScene
         outputs[:scene].background_color = [64, 64, 64, 255]
         outputs[:scene].primitives << {x:0, y:0, w:3840, h:2160, path: :background }.sprite!
         outputs[:scene].primitives << @campfire.render()
+        outputs[:scene].primitives << @friends
         outputs[:scene].primitives << @player
 
     end
