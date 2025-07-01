@@ -1,5 +1,6 @@
 class Campfire
     attr_sprite
+    attr_accessor :fire, :light
 
     def initialize x = 750, y = 750
         @fire = { anchor_x: 0.5, anchor_y: 0.5,

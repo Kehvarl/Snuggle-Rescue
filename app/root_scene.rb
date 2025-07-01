@@ -6,12 +6,14 @@ class RootScene
         @campfire = Campfire.new(3840/2, 2160/2)
         @player = {x: 3840/2+64, y: 2160/2+64, w: 16, h: 16,
                    anchor_x: 0.5, anchor_y: 0.5,
-                   path: "sprites/circle/green.png"}.sprite!
+                   path: "sprites/circle/green.png",
+                   friend: false}.sprite!
         @camera = {x: 3840/2, y: 2160/2, zoom: 1.0}
         @tiles = []
         @paths = []
         @obstacles  = []
         @friends = []
+        @rescued = []
         # useful tiles:
         # Empty
         # 9,12
@@ -69,7 +71,7 @@ class RootScene
             x = rand(240)
             y = rand(134) + 1
             if @args.geometry.find_all_intersect_rect({x:x, y:y, w:16, h:32}, @paths).empty?
-                tree = rand(4) + 15
+                tree = rand(3) + 15
                 @obstacles << {
                     x: x*16, y: y*16, w: 16, h: 16,
                     anchor_x: 0.5, anchor_y: 0.5,
@@ -113,6 +115,7 @@ class RootScene
 
     def tick
         process_input
+        calc_player
         @campfire.tick
         calc_camera
         render_scene
@@ -152,6 +155,22 @@ class RootScene
         end
     end
 
+    def calc_player
+        if not @player.friend
+            found = @args.geometry.find_all_intersect_rect @player, @friends
+            if found.count > 0
+                @player.friend = found[0]
+                @friends.delete(found[0])
+            end
+        elsif @args.geometry.distance(@player, @campfire.fire) <= 128
+            f = @player.friend
+            f.x = @player.x + 16
+            f.y = @player.y
+            @player.friend = false
+            @rescued << f
+        end
+    end
+
     def calc_camera
         @camera.x = @player.x.clamp(640, 3200)
         @camera.y = @player.y.clamp(360, 1800)
@@ -165,13 +184,21 @@ class RootScene
         outputs[:scene].primitives << {x:0, y:0, w:3840, h:2160, path: :background }.sprite!
         outputs[:scene].primitives << @campfire.render()
         outputs[:scene].primitives << @friends
+        outputs[:scene].primitives << @rescued
         outputs[:scene].primitives << @player
-
     end
 
     def render
-        {x: 0, y: 0, w: 1280, h: 720, path: :scene,
-         source_x: @camera.x-640, source_y: @camera.y-360,
-         source_w: 1280, source_h: 720}.sprite!
+        out = [
+            {x: 0, y: 0, w: 1280, h: 720, path: :scene,
+            source_x: @camera.x-640, source_y: @camera.y-360,
+            source_w: 1280, source_h: 720}.sprite!
+        ]
+        if @rescued.size == 12
+            out << {x: 320, y: 160, w: 640, h: 320, r: 128, g: 128, b: 128}.solid
+            out << {x: 320, y: 180, w: 640, h: 320, text: "Hurray!"}.label!
+            out << {x: 320, y: 160, w: 640, h: 320, text: "You found all your friends!"}.label!
+        end
+        out
     end
 end
