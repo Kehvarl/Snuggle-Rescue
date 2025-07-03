@@ -14,21 +14,10 @@ class RootScene
         @obstacles  = []
         @friends = []
         @rescued = []
-        # useful tiles:
-        # Empty
-        # 9,12
-        # Path Ends
-        # 12,12 13,12 14,12 < > ^
-        # 12,11       14,11 ^   v
-        # 12,10 13,10 14,10 v < >
-        # Paths
-        #      13,11          +
-        # 12,9 13,9 14,9
-        # 12,8      14,8
-        # 12.7 13,7 14,7
-        # Path T connectors
-        # 12,6 13,6         | T
-        # 12,5 13,5         - |
+        generate_map
+    end
+
+    def generate_map
         0.step(3840, 16) do |x|
             0.step(2160, 16) do |y|
                 @tiles << {x: x, y: y, w: 16, h: 16,
