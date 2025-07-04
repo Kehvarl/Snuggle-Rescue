@@ -80,7 +80,7 @@ class RootScene
         while @friends.size < 12 do
             x = rand(240)
             y = rand(134) + 1
-            if @args.geometry.find_all_intersect_rect({x:x, y:y, w:16, h:32}, @obstacles).empty?
+            if @args.geometry.find_all_intersect_rect({x:x, y:y, w:16, h:16}, @obstacles).empty?
                 @friends << {
                     x: x*16, y: y*16, w: 16, h: 16,
                     anchor_x: 0.5, anchor_y: 0.5,
@@ -157,6 +157,7 @@ class RootScene
             f.y = @player.y
             @player.friend = false
             @rescued << f
+            @campfire.radius += 10
         end
     end
 
@@ -184,9 +185,9 @@ class RootScene
             source_w: 1280, source_h: 720}.sprite!
         ]
         if @rescued.size == 12
-            out << {x: 320, y: 160, w: 640, h: 320, r: 128, g: 128, b: 128}.solid
-            out << {x: 320, y: 180, w: 640, h: 320, text: "Hurray!"}.label!
-            out << {x: 320, y: 160, w: 640, h: 320, text: "You found all your friends!"}.label!
+            out << {x: 320, y: 200, w: 640, h: 240, r: 128, g: 128, b: 128}.solid
+            out << {x: 600, y: 380, w: 640, h: 320, text: "Hurray!"}.label!
+            out << {x: 480, y: 360, w: 640, h: 320, text: "You found all your friends!"}.label!
         end
         out
     end
