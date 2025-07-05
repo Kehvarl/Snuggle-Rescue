@@ -12,6 +12,7 @@ class RootScene
         @tiles = []
         @paths = []
         @obstacles  = []
+        @friends_count = 12
         @friends = []
         @rescued = []
         generate_map
@@ -77,7 +78,7 @@ class RootScene
                 }.sprite!
             end
         end
-        while @friends.size < 12 do
+        while @friends.size < @friends_count do
             x = rand(240)
             y = rand(134) + 1
             if @args.geometry.find_all_intersect_rect({x:x, y:y, w:16, h:16}, @obstacles).empty?
@@ -153,12 +154,18 @@ class RootScene
             end
         elsif @args.geometry.distance(@player, @campfire.fire) <= 128
             f = @player.friend
-            f.x = @player.x + 16
-            f.y = @player.y
+            place_rescued f
             @player.friend = false
-            @rescued << f
-            @campfire.radius += 10
         end
+    end
+
+    def place_rescued friend
+        deg = (360.0 / @friends_count) * (@rescued.size + 1)
+        rad = deg * Math::PI / 180
+        friend.x = 128 * Math.sin(rad) + @campfire.fire.x
+        friend.y = 128 * Math.cos(rad) + @campfire.fire.y
+        @campfire.radius += 10
+        @rescued << friend
     end
 
     def calc_camera
@@ -184,7 +191,7 @@ class RootScene
             source_x: @camera.x-640, source_y: @camera.y-360,
             source_w: 1280, source_h: 720}.sprite!
         ]
-        if @rescued.size == 12
+        if @rescued.size == @friends_count
             out << {x: 320, y: 200, w: 640, h: 240, r: 128, g: 128, b: 128}.solid
             out << {x: 600, y: 380, w: 640, h: 320, text: "Hurray!"}.label!
             out << {x: 480, y: 360, w: 640, h: 320, text: "You found all your friends!"}.label!
