@@ -160,7 +160,7 @@ class RootScene
     end
 
     def place_rescued friend
-        deg = (360.0 / @friends.count) * (@rescued.size + 1)
+        deg = (360.0 / @friends_count) * (@rescued.size + 1)
         rad = deg * Math::PI / 180
         friend.x = 128 * Math.sin(rad) + @campfire.fire.x
         friend.y = 128 * Math.cos(rad) + @campfire.fire.y
