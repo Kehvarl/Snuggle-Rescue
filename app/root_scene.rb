@@ -16,6 +16,7 @@ class RootScene
         @friends = []
         @rescued = []
         generate_map
+        generate_background
     end
 
     def generate_map
@@ -28,6 +29,12 @@ class RootScene
                            path: "sprites/snow_islands.png"}.sprite!
             end
         end
+        generate_map_paths
+        generate_map_obstacles
+        populate_friends
+    end
+
+    def generate_map_paths
         s = [1848, 1008, 13, 9]
         [[1972, 1008, 14, 8], [1972, 1132, 13, 7], [1848, 1132, 12, 8], [1848, 1008, 14, 7]].each do |t|
             dx = t[0] <=> s[0]
@@ -57,6 +64,9 @@ class RootScene
                 path: "sprites/snow_islands.png"
             }.sprite!
         end
+    end
+
+    def generate_map_obstacles
         500.times do
             x = rand(240)
             y = rand(134) + 1
@@ -78,6 +88,9 @@ class RootScene
                 }.sprite!
             end
         end
+    end
+
+    def populate_friends
         while @friends.size < @friends_count do
             x = rand(240)
             y = rand(134) + 1
@@ -89,7 +102,6 @@ class RootScene
                 }.sprite!
             end
         end
-        generate_background
     end
 
     def generate_background
@@ -152,19 +164,20 @@ class RootScene
                 @player.friend = found[0]
                 @friends.delete(found[0])
             end
-        elsif @args.geometry.distance(@player, @campfire.fire) <= 128
+        elsif @args.geometry.distance(@player, @campfire.fire) <= @campfire.radius
             f = @player.friend
             place_rescued f
             @player.friend = false
         end
     end
 
+
     def place_rescued friend
         deg = (360.0 / @friends_count) * (@rescued.size + 1)
         rad = deg * Math::PI / 180
         friend.x = 128 * Math.sin(rad) + @campfire.fire.x
         friend.y = 128 * Math.cos(rad) + @campfire.fire.y
-        @campfire.radius += 10
+        @campfire.radius += 16
         @rescued << friend
     end
 
@@ -192,7 +205,7 @@ class RootScene
             source_w: 1280, source_h: 720}.sprite!
         ]
         if @rescued.size == @friends_count
-            out << {x: 320, y: 200, w: 640, h: 240, r: 128, g: 128, b: 128}.solid
+            out << {x: 320, y: 200, w: 640, h: 240, r: 128, g: 128, b: 128}.solid!
             out << {x: 600, y: 380, w: 640, h: 320, text: "Hurray!"}.label!
             out << {x: 480, y: 360, w: 640, h: 320, text: "You found all your friends!"}.label!
         end

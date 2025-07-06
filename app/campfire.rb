@@ -3,7 +3,7 @@ class Campfire
     attr_accessor :fire, :light, :radius
 
     def initialize x = 750, y = 750
-        @radius = 300
+        @radius = 128
         @fire = { anchor_x: 0.5, anchor_y: 0.5,
                   x: x, y: y, w: 50, h: 50,
                   tile_w: 80, tile_h: 80, tile_x: 0, tile_y: 0,
