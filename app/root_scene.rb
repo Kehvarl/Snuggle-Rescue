@@ -158,6 +158,10 @@ class RootScene
     end
 
     def calc_player
+        # Instead of picking up a friend, we could make them follow the player
+        # Need either some pathfinding or for the player to lay down a "trail" the friend can follow
+        # Since movement is not grid-aligned, pathfinding might be better
+        # Will look up an Astar implementation for DRGTK.
         if not @player.friend
             found = @args.geometry.find_all_intersect_rect @player, @friends
             if found.count > 0
