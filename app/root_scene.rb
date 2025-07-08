@@ -157,6 +157,40 @@ class RootScene
         end
     end
 
+    # Derived from samples/13_path_finding_algorithms/09_tower_defense/app/main.rb
+    def calc_astar entity, destination
+        # Only does this one time
+        return unless args.state.a_star.path.empty?
+
+        # Start the search from the grid start
+        args.state.a_star.frontier << args.state.grid_start
+        args.state.a_star.came_from[args.state.grid_start] = nil
+
+        # Until a path to the goal has been found or there are no more tiles to explore
+        until (args.state.a_star.came_from.key?(args.state.grid_goal) || args.state.a_star.frontier.empty?)
+        # For the first tile in the frontier
+        tile_to_expand_from = args.state.a_star.frontier.shift
+        # Add each of its neighbors to the frontier
+        neighbors(args, tile_to_expand_from).each do |tile|
+            args.state.a_star.frontier << tile
+            args.state.a_star.came_from[tile] = tile_to_expand_from
+        end
+        end
+
+        # Stop calculating a path if the goal was never reached
+        return unless args.state.a_star.came_from.key? args.state.grid_goal
+
+        # Fill path by tracing back from the goal
+        current_cell = args.state.grid_goal
+        while current_cell
+        args.state.a_star.path.unshift current_cell
+        current_cell = args.state.a_star.came_from[current_cell]
+        end
+
+        puts "The path has been calculated"
+        puts args.state.a_star.path
+    end
+
     def calc_player
         # Instead of picking up a friend, we could make them follow the player
         # Need either some pathfinding or for the player to lay down a "trail" the friend can follow
