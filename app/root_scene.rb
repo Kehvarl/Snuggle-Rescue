@@ -15,6 +15,7 @@ class RootScene
         @friends_count = 12
         @friends = []
         @rescued = []
+        @astar = {}
         generate_map
         generate_background
     end
@@ -159,12 +160,9 @@ class RootScene
 
     # Derived from samples/13_path_finding_algorithms/09_tower_defense/app/main.rb
     def calc_astar entity, destination
-        # Only does this one time
-        return unless args.state.a_star.path.empty?
-
         # Start the search from the grid start
-        args.state.a_star.frontier << args.state.grid_start
-        args.state.a_star.came_from[args.state.grid_start] = nil
+        @astar.frontier << args.state.grid_start
+        @astar.came_from[args.state.grid_start] = nil
 
         # Until a path to the goal has been found or there are no more tiles to explore
         until (args.state.a_star.came_from.key?(args.state.grid_goal) || args.state.a_star.frontier.empty?)
@@ -186,9 +184,6 @@ class RootScene
         args.state.a_star.path.unshift current_cell
         current_cell = args.state.a_star.came_from[current_cell]
         end
-
-        puts "The path has been calculated"
-        puts args.state.a_star.path
     end
 
     def calc_player
