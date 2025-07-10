@@ -161,28 +161,26 @@ class RootScene
     # Derived from samples/13_path_finding_algorithms/09_tower_defense/app/main.rb
     def calc_astar entity, destination
         # Start the search from the grid start
-        @astar.frontier << args.state.grid_start
-        @astar.came_from[args.state.grid_start] = nil
+        state.a_star.frontier << state.grid_start
+        state.a_star.came_from[state.grid_start] = nil
 
         # Until a path to the goal has been found or there are no more tiles to explore
-        until (args.state.a_star.came_from.key?(args.state.grid_goal) || args.state.a_star.frontier.empty?)
-        # For the first tile in the frontier
-        tile_to_expand_from = args.state.a_star.frontier.shift
-        # Add each of its neighbors to the frontier
-        neighbors(args, tile_to_expand_from).each do |tile|
-            args.state.a_star.frontier << tile
-            args.state.a_star.came_from[tile] = tile_to_expand_from
-        end
+        until (state.a_star.came_from.key?(state.grid_goal) || state.a_star.frontier.empty?)
+            # For the first tile in the frontier
+            tile_to_expand_from = state.a_star.frontier.shift
+            # Add each of its neighbors to the frontier
+            neighbors(args, tile_to_expand_from).each do |tile|
+                state.a_star.frontier << tile
+                state.a_star.came_from[tile] = tile_to_expand_from
+            end
         end
 
-        # Stop calculating a path if the goal was never reached
-        return unless args.state.a_star.came_from.key? args.state.grid_goal
+        return unless state.a_star.came_from.key? state.grid_goal
 
-        # Fill path by tracing back from the goal
-        current_cell = args.state.grid_goal
+        current_cell = state.grid_goal
         while current_cell
-        args.state.a_star.path.unshift current_cell
-        current_cell = args.state.a_star.came_from[current_cell]
+            state.a_star.path.unshift current_cell
+            current_cell = state.a_star.came_from[current_cell]
         end
     end
 
