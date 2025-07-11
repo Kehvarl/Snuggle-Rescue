@@ -158,14 +158,23 @@ class RootScene
         end
     end
 
+    def pixel_to_grid x,y
+        return 0,0
+    end
+
+    def neighbors tile_to_expand_from
+        return 0,0
+    end
+
     # Derived from samples/13_path_finding_algorithms/09_tower_defense/app/main.rb
     def calc_astar entity, destination
-        # Start the search from the grid start
-        state.a_star.frontier << state.grid_start
+        # Start the search from the entity location
+        state.a_star.frontier = [pixel_to_grid(entity.x, entity.y)]
+        state.a_star.came_from = {}
         state.a_star.came_from[state.grid_start] = nil
 
         # Until a path to the goal has been found or there are no more tiles to explore
-        until (state.a_star.came_from.key?(state.grid_goal) || state.a_star.frontier.empty?)
+        until (state.a_star.came_from.key?(destination) || state.a_star.frontier.empty?)
             # For the first tile in the frontier
             tile_to_expand_from = state.a_star.frontier.shift
             # Add each of its neighbors to the frontier
