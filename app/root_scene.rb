@@ -168,7 +168,7 @@ class RootScene
 
     # Derived from samples/13_path_finding_algorithms/09_tower_defense/app/main.rb
     def calc_astar entity, destination
-        # Start the search from the entity location
+        # TODO Start the search from the entity location
         state.a_star.frontier = [pixel_to_grid(entity.x, entity.y)]
         state.a_star.came_from = {}
         state.a_star.came_from[state.grid_start] = nil
@@ -194,10 +194,11 @@ class RootScene
     end
 
     def calc_player
-        # Instead of picking up a friend, we could make them follow the player
+        # TODO Instead of picking up a friend, we could make them follow the player
         # Need either some pathfinding or for the player to lay down a "trail" the friend can follow
         # Since movement is not grid-aligned, pathfinding might be better
         # Will look up an Astar implementation for DRGTK.
+        # May just call this complete and push forward to a new project.
         if not @player.friend
             found = @args.geometry.find_all_intersect_rect @player, @friends
             if found.count > 0
