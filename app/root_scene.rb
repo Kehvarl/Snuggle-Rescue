@@ -198,7 +198,7 @@ class RootScene
         # Need either some pathfinding or for the player to lay down a "trail" the friend can follow
         # Since movement is not grid-aligned, pathfinding might be better
         # Will look up an Astar implementation for DRGTK.
-        # May just call this complete and push forward to a new project.
+        # May just call this complete and push forward to a new project since progress has stalled
         if not @player.friend
             found = @args.geometry.find_all_intersect_rect @player, @friends
             if found.count > 0
